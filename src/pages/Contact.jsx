@@ -61,9 +61,14 @@ export default function Contact() {
       return;
     }
 
+    if (message.length > 500) {
+      setStatus("error");
+      return;
+    }
+
     setStatus("submitting");
 
-    // 👈 THE FIX IS HERE: Convert to JSON instead of FormData
+    // Convert to JSON for mobile reliability
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
@@ -73,7 +78,7 @@ export default function Contact() {
     try {
       const response = await fetch("https://formspree.io/f/mppdzkbq", {
         method: "POST",
-        body: JSON.stringify(data), // 👈 Sending as JSON
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -191,16 +196,24 @@ export default function Contact() {
                 )}
               </div>
 
-              {/* Message Textarea */}
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                required
-                rows="4"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-cream/50 text-charcoal focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all resize-none"
-              ></textarea>
+              {/* Message Textarea with Limit and Counter */}
+              <div>
+                <textarea
+                  name="message"
+                  placeholder="Your Message"
+                  required
+                  rows="4"
+                  maxLength={500} // 👈 Limit applied here
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-cream/50 text-charcoal focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all resize-none"
+                ></textarea>
+
+                {/* 👈 Character Counter */}
+                <div className="text-right text-[0.75rem] text-charcoal/40 mt-1 mr-1">
+                  {message.length} / 500
+                </div>
+              </div>
 
               <button
                 type="submit"
