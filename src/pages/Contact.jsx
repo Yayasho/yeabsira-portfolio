@@ -24,10 +24,9 @@ export default function Contact() {
     }
   }, [status]);
 
-  // 👈 NEW: Prevent numbers in the Name field
+  // Prevent numbers in the Name field
   const handleNameChange = (e) => {
     const value = e.target.value;
-    // Regex to allow only letters and spaces
     if (/^[a-zA-Z\s]*$/.test(value)) {
       setName(value);
       setNameError("");
@@ -42,7 +41,7 @@ export default function Contact() {
     const data = new FormData(form);
     const email = data.get("email");
 
-    // 1. Check Email
+    // Strict Email Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError(
@@ -52,13 +51,11 @@ export default function Contact() {
     }
     setEmailError("");
 
-    // 2. Check Name (in case they bypassed the input restriction)
     if (name.trim().length === 0) {
       setNameError("Name is required.");
       return;
     }
 
-    // 3. Check Message (ensure it's not just spaces)
     if (message.trim().length < 5) {
       setStatus("error");
       return;
@@ -139,7 +136,7 @@ export default function Contact() {
               Send me a message
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-              {/* Name Input with Number Prevention */}
+              {/* Name Input */}
               <div>
                 <input
                   type="text"
@@ -159,7 +156,7 @@ export default function Contact() {
                 )}
               </div>
 
-              {/* Email Input with Validation */}
+              {/* Email Input */}
               <div>
                 <input
                   type="email"
@@ -175,6 +172,13 @@ export default function Contact() {
                 />
                 {emailError && (
                   <p className="text-red-500 text-sm mt-1.5">{emailError}</p>
+                )}
+
+                {/* 👈 THE NEW HINT IS HERE */}
+                {!emailError && (
+                  <p className="text-charcoal/40 text-[0.75rem] mt-1.5 ml-1">
+                    Please ensure this is correct so I can reply.
+                  </p>
                 )}
               </div>
 
