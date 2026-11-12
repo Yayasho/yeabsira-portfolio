@@ -5,7 +5,7 @@ const navItems = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Journey", to: "/journey" },
-  { label: "Contact", to: "/contact" },
+  // Contact removed
 ];
 
 export default function Nav() {
@@ -23,7 +23,7 @@ export default function Nav() {
           Yeabsira.
         </Link>
 
-        {/* DESKTOP NAVIGATION (Hidden on Mobile) */}
+        {/* DESKTOP NAVIGATION */}
         <div className="hidden md:flex items-center gap-10">
           <ul className="flex items-center gap-8 list-none">
             {navItems.map((item) => (
@@ -51,7 +51,7 @@ export default function Nav() {
           </Link>
         </div>
 
-        {/* MOBILE HAMBURGER BUTTON (Visible only on Mobile) */}
+        {/* MOBILE HAMBURGER BUTTON */}
         <button
           className="md:hidden block text-teal text-3xl p-2 focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
