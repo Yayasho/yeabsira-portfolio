@@ -38,8 +38,8 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const data = new FormData(form);
-    const email = data.get("email");
+    const formData = new FormData(form);
+    const email = formData.get("email");
 
     // Strict Email Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,11 +63,21 @@ export default function Contact() {
 
     setStatus("submitting");
 
+    // 👈 THE FIX IS HERE: Convert to JSON instead of FormData
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message"),
+    };
+
     try {
       const response = await fetch("https://formspree.io/f/mppdzkbq", {
         method: "POST",
-        body: data,
-        headers: { Accept: "application/json" },
+        body: JSON.stringify(data), // 👈 Sending as JSON
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
       });
       if (response.ok) {
         setStatus("success");
@@ -174,7 +184,6 @@ export default function Contact() {
                   <p className="text-red-500 text-sm mt-1.5">{emailError}</p>
                 )}
 
-                {/* 👈 THE NEW HINT IS HERE */}
                 {!emailError && (
                   <p className="text-charcoal/40 text-[0.75rem] mt-1.5 ml-1">
                     Please ensure this is correct so I can reply.
@@ -208,7 +217,8 @@ export default function Contact() {
               )}
               {status === "error" && (
                 <p className="text-red-500 font-medium mt-4 text-center">
-                  Oops! Something went wrong. Please try again.
+                  Oops! Something went wrong. Please try again or email me
+                  directly.
                 </p>
               )}
             </form>
