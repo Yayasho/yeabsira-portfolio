@@ -61,7 +61,7 @@ export default function Contact() {
       return;
     }
 
-    if (message.length > 500) {
+    if (message.length > 250) {
       setStatus("error");
       return;
     }
@@ -203,15 +203,15 @@ export default function Contact() {
                   placeholder="Your Message"
                   required
                   rows="4"
-                  maxLength={500} // 👈 Limit applied here
+                  maxLength={250}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-cream/50 text-charcoal focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all resize-none"
                 ></textarea>
 
-                {/* 👈 Character Counter */}
+                {/* Character Counter */}
                 <div className="text-right text-[0.75rem] text-charcoal/40 mt-1 mr-1">
-                  {message.length} / 500
+                  {message.length} / 250
                 </div>
               </div>
 
