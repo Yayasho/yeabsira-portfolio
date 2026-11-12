@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600&display=swap');
+
+@theme {
+  /* New Editorial Palette */
+  --color-cream: #fbfaf7;
+  --color-teal: #0f3d3e;
+  --color-sage: #8ba888;
+  --color-charcoal: #2c2c2c;
+  --color-grey: #e5e5e5;
+  --color-white: #ffffff;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-cream text-charcoal font-body antialiased overflow-x-hidden;
+    line-height: 1.6;
+  }
+  ::selection {
+    background: var(--color-sage);
+    color: var(--color-cream);
+  }
+}
