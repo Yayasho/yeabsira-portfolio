@@ -10,6 +10,10 @@ const fadeUp = {
 
 export default function Contact() {
   const [status, setStatus] = useState("idle");
+  const [emailError, setEmailError] = useState("");
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [nameError, setNameError] = useState("");
 
   useEffect(() => {
     if (status === "success" || status === "error") {
@@ -20,11 +24,47 @@ export default function Contact() {
     }
   }, [status]);
 
+  // 👈 NEW: Prevent numbers in the Name field
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    // Regex to allow only letters and spaces
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setName(value);
+      setNameError("");
+    } else {
+      setNameError("Name can only contain letters and spaces.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("submitting");
     const form = e.target;
     const data = new FormData(form);
+    const email = data.get("email");
+
+    // 1. Check Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError(
+        "Please enter a valid email address (e.g., name@gmail.com).",
+      );
+      return;
+    }
+    setEmailError("");
+
+    // 2. Check Name (in case they bypassed the input restriction)
+    if (name.trim().length === 0) {
+      setNameError("Name is required.");
+      return;
+    }
+
+    // 3. Check Message (ensure it's not just spaces)
+    if (message.trim().length < 5) {
+      setStatus("error");
+      return;
+    }
+
+    setStatus("submitting");
 
     try {
       const response = await fetch("https://formspree.io/f/mppdzkbq", {
@@ -35,6 +75,8 @@ export default function Contact() {
       if (response.ok) {
         setStatus("success");
         form.reset();
+        setName("");
+        setMessage("");
       } else {
         setStatus("error");
       }
@@ -96,26 +138,54 @@ export default function Contact() {
             <h2 className="font-display text-2xl text-teal mb-6">
               Send me a message
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-cream/50 text-charcoal focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-cream/50 text-charcoal focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all"
-              />
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+              {/* Name Input with Number Prevention */}
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  required
+                  value={name}
+                  onChange={handleNameChange}
+                  className={`w-full px-4 py-3 rounded-xl border bg-cream/50 text-charcoal focus:outline-none transition-all ${
+                    nameError
+                      ? "border-red-400 focus:border-red-500 focus:ring-red-500"
+                      : "border-charcoal/20 focus:border-teal focus:ring-1 focus:ring-teal"
+                  }`}
+                />
+                {nameError && (
+                  <p className="text-red-500 text-sm mt-1.5">{nameError}</p>
+                )}
+              </div>
+
+              {/* Email Input with Validation */}
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  required
+                  className={`w-full px-4 py-3 rounded-xl border bg-cream/50 text-charcoal focus:outline-none transition-all ${
+                    emailError
+                      ? "border-red-400 focus:border-red-500 focus:ring-red-500"
+                      : "border-charcoal/20 focus:border-teal focus:ring-1 focus:ring-teal"
+                  }`}
+                  onChange={() => setEmailError("")}
+                />
+                {emailError && (
+                  <p className="text-red-500 text-sm mt-1.5">{emailError}</p>
+                )}
+              </div>
+
+              {/* Message Textarea */}
               <textarea
                 name="message"
                 placeholder="Your Message"
                 required
                 rows="4"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-charcoal/20 bg-cream/50 text-charcoal focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all resize-none"
               ></textarea>
 
